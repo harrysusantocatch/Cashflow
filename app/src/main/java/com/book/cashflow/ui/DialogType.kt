@@ -14,6 +14,7 @@ import com.book.cashflow.R
 import com.book.cashflow.adapter.TransactionTypeAdapter
 import com.book.cashflow.model.TransactionType
 import com.book.cashflow.model.Type
+import com.book.cashflow.repository.SqLiteHandler
 import kotlinx.android.synthetic.main.dialog_type.*
 import kotlinx.android.synthetic.main.dialog_type.view.*
 
@@ -64,7 +65,12 @@ class DialogType: DialogFragment() {
                 var type = Type.DEBET
                 if(radioButtonSelected.text.toString() == "Credit")
                     type = Type.CREDIT
-                val transactionType = TransactionType(typeName, type)
+                val transactionType = TransactionType(null, typeName, type)
+                SqLiteHandler(context).insertTransactionType(transactionType)
+                loadTypes()
+                stateAdd = false
+                showLayout(rootView)
+                rootView.btnClose.setImageDrawable(context?.getDrawable(R.drawable.ic_clear))
             }
         }
     }
@@ -78,14 +84,8 @@ class DialogType: DialogFragment() {
     }
 
     private fun loadTypes() {
-        val tp1 = TransactionType("Test 1", Type.CREDIT)
-        val tp2 = TransactionType("Test 2", Type.CREDIT)
-        val tp3 = TransactionType("Test 3", Type.DEBET)
-        val tp4 = TransactionType("Test 4", Type.DEBET)
-        types.add(tp1)
-        types.add(tp2)
-        types.add(tp3)
-        types.add(tp4)
+        val trxType = SqLiteHandler(context).listTransactionType
+        types.addAll(trxType)
         adapter.notifyDataSetChanged()
     }
 

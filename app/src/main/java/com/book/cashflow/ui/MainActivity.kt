@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.book.cashflow.R
 import com.book.cashflow.model.Transaction
 import com.book.cashflow.adapter.TransactionAdapter
-import com.book.cashflow.model.TransactionType
-import com.book.cashflow.model.Type
+import com.book.cashflow.repository.SqLiteHandler
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : Activity(),
@@ -43,43 +42,7 @@ View.OnClickListener{
     }
 
     private fun getTransaction(): ArrayList<Transaction> {
-        val trx = arrayListOf<Transaction>()
-        val tx1 = Transaction(
-            "2-2-2020",
-            "Pembelian alat tulis",
-            20000.0,
-            TransactionType("Pembelian", Type.DEBET)
-        )
-        val tx2 = Transaction(
-            "4-2-2020",
-            "Pendanaan dari mars.inc",
-            2000000.0,
-            TransactionType("Pendanaan", Type.CREDIT)
-        )
-        val tx3 = Transaction(
-            "8-2-2020",
-            "Pembelian sapu lidi",
-            8000.0,
-            TransactionType("Pembelian", Type.DEBET)
-        )
-        val tx4 = Transaction(
-            "11-2-2020",
-            "Pembelian keyboard",
-            240000.0,
-            TransactionType("Pembelian", Type.DEBET)
-        )
-        val tx5 = Transaction(
-            "11-2-2020",
-            "Pendanaan keyboard",
-            200000.0,
-            TransactionType("Pendanaan", Type.CREDIT)
-        )
-        trx.add(tx1)
-        trx.add(tx2)
-        trx.add(tx3)
-        trx.add(tx4)
-        trx.add(tx5)
-        return trx
+        return SqLiteHandler(this).listTransaction
     }
 
     override fun onClick(v: View?) {

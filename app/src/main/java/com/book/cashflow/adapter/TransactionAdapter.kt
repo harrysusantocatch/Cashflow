@@ -9,7 +9,9 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.book.cashflow.R
 import com.book.cashflow.model.Transaction
+import com.book.cashflow.model.TransactionType
 import com.book.cashflow.model.Type
+import com.book.cashflow.repository.SqLiteHandler
 import kotlinx.android.synthetic.main.adapter_transaction.view.*
 import java.text.NumberFormat
 
@@ -39,7 +41,7 @@ class TransactionAdapter(private val context: Context,
         val dateArr = transaction.date.split("-")
         var day = dateArr[0]
         var month = dateArr[1]
-        var year = dateArr[2]
+        val year = dateArr[2]
         if(day.length == 1) day = "0${day}"
         if(month.length == 1) month = "0${month}"
         holder.dayView.text = day
@@ -47,14 +49,24 @@ class TransactionAdapter(private val context: Context,
         holder.yearView.text = year
         holder.descriptionView.text = transaction.description
         holder.amountView.text = formatPrice(transaction.amount)
-        if(transaction.type.type == Type.CREDIT){
+        val trxType = getTransactionType(transaction.typeID)
+        trxType?.let {
+            if( it.type == Type.CREDIT){
             holder.amountView.setTextColor(ContextCompat.getColor(context, R.color.blue))
-        }else{
-            holder.amountView.setTextColor(ContextCompat.getColor(context, R.color.red))
+            }else{
+                holder.amountView.setTextColor(ContextCompat.getColor(context, R.color.red))
+            }
         }
-
     }
 
+    private fun getTransactionType(id: String): TransactionType?{
+        val transactionTypes = SqLiteHandler(context).listTransactionType
+        for (trxType in transactionTypes){
+            if(trxType.id == id)
+                return trxType
+        }
+        return null
+    }
     private fun formatPrice(amount: Double): String{
         try {
             if(amount == 0.0) return "0"
