@@ -1,6 +1,8 @@
 package com.book.cashflow.ui
 
+import android.app.DatePickerDialog
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.format.DateFormat
 import android.view.View
@@ -25,6 +27,7 @@ class InputTransactionActivity : FragmentActivity(),
         btnBack.setOnClickListener(this)
         imgTypeView.setOnClickListener(this)
         btnSave.setOnClickListener(this)
+        imgCalendarView.setOnClickListener(this)
     }
 
     fun setTypeFromDialog(type: TransactionType){
@@ -39,7 +42,26 @@ class InputTransactionActivity : FragmentActivity(),
                 showType()
             }
             R.id.btnSave -> saveTransaction()
+            R.id.imgCalendarView -> showCalendar()
         }
+    }
+
+    private fun showCalendar() {
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+        DatePickerDialog(this, DatePickerDialog.OnDateSetListener { _, year, month, dayOfMonth ->
+            var selectedMonth = (month+1).toString()
+            if(selectedMonth.length == 1){
+                selectedMonth = "0${selectedMonth}"
+            }
+            var selectedDay = dayOfMonth.toString()
+            if(selectedDay.length == 1){
+                selectedDay = "0${selectedDay}"
+            }
+            dateView.setText("${year}-${selectedMonth}-${selectedDay}")
+        }, year, month, day).show()
     }
 
     private fun showType() {
