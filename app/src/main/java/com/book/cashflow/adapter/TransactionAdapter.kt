@@ -39,16 +39,16 @@ class TransactionAdapter(private val context: Context,
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val transaction = transactions[position]
         val dateArr = transaction.date.split("-")
-        var day = dateArr[0]
-        var month = dateArr[1]
-        val year = dateArr[2]
+        var day = dateArr[2].trim()
+        var month = dateArr[1].trim()
+        val year = dateArr[0].trim()
         if(day.length == 1) day = "0${day}"
         if(month.length == 1) month = "0${month}"
         holder.dayView.text = day
         holder.monthView.text = month
         holder.yearView.text = year
         holder.descriptionView.text = transaction.description
-        holder.amountView.text = formatPrice(transaction.amount)
+        holder.amountView.text = formatPrice(transaction.amount.toDouble())
         val trxType = getTransactionType(transaction.typeID)
         trxType?.let {
             if( it.type == Type.CREDIT){

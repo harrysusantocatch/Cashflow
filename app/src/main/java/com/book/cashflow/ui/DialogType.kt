@@ -18,7 +18,7 @@ import com.book.cashflow.repository.SqLiteHandler
 import kotlinx.android.synthetic.main.dialog_type.*
 import kotlinx.android.synthetic.main.dialog_type.view.*
 
-class DialogType: DialogFragment() {
+class DialogType(private val inputActivity: InputTransactionActivity): DialogFragment() {
 
     private var types = arrayListOf<TransactionType>()
     private lateinit var adapter: TransactionTypeAdapter
@@ -33,12 +33,17 @@ class DialogType: DialogFragment() {
         super.onCreateView(inflater, container, savedInstanceState)
         val rootView = inflater.inflate(R.layout.dialog_type, container, false)
         setOnCLickListener(rootView)
-        adapter = TransactionTypeAdapter(context!!, types)
+        adapter = TransactionTypeAdapter(this, types)
         rootView.typeView.layoutManager = LinearLayoutManager(context)
         rootView.typeView.adapter = adapter
         loadTypes()
         setStyle(STYLE_NO_FRAME, R.style.MyDialog)
         return rootView
+    }
+
+    fun setTypeIntoTransaction(type: TransactionType){
+        inputActivity.setTypeFromDialog(type)
+        dismiss()
     }
 
     private fun setOnCLickListener(rootView: View) {
@@ -85,6 +90,7 @@ class DialogType: DialogFragment() {
 
     private fun loadTypes() {
         val trxType = SqLiteHandler(context).listTransactionType
+        types.clear()
         types.addAll(trxType)
         adapter.notifyDataSetChanged()
     }

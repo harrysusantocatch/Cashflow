@@ -2,7 +2,7 @@ package com.book.cashflow.model
 
 import java.io.Serializable
 
-class TransactionType(val id: String?,
+class TransactionType(val id: String? = null,
                       val name: String,
                       val type: Type): Serializable
 
