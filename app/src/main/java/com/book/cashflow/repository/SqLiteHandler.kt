@@ -159,7 +159,7 @@ class SqLiteHandler constructor(context: Context?) :
             val query =
                 ("SELECT " + TRANSACTION_KEY_ID + ", " + TRANSACTION_KEY_DATE + ", " + TRANSACTION_KEY_DESCRIPTION
                         + ", " + TRANSACTION_KEY_AMOUNT + ", " + TRANSACTION_KEY_TYPE
-                        + " FROM " + TABLE_TRANSACTION + " ORDER BY " + TRANSACTION_KEY_DATE + " DESC")
+                        + " FROM " + TABLE_TRANSACTION + " ORDER BY " + TRANSACTION_KEY_ID + " DESC")
             val cursor = db.rawQuery(query, null)
             while (cursor.moveToNext()) {
                 val id = cursor.getString(cursor.getColumnIndex(TRANSACTION_KEY_ID))

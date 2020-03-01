@@ -9,12 +9,16 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import com.book.cashflow.R
+import com.book.cashflow.extension.afterTextChanged
+import com.book.cashflow.extension.onTextChanged
 import com.book.cashflow.model.Balance
 import com.book.cashflow.model.Transaction
 import com.book.cashflow.model.TransactionType
 import com.book.cashflow.model.Type
 import com.book.cashflow.repository.SqLiteHandler
 import kotlinx.android.synthetic.main.activity_input_transaction.*
+import java.text.DecimalFormat
+import java.text.NumberFormat
 import java.util.*
 
 class InputTransactionActivity : FragmentActivity(),
@@ -28,6 +32,15 @@ class InputTransactionActivity : FragmentActivity(),
         imgTypeView.setOnClickListener(this)
         btnSave.setOnClickListener(this)
         imgCalendarView.setOnClickListener(this)
+        amountView.onTextChanged { p0, p1, p2, p3 ->
+            var str = p0.toString()
+            if(str.contains(",")) str = str.replace(",", "")
+            val formatter = NumberFormat.getInstance() as DecimalFormat
+            formatter.applyPattern("#,###,###,###")
+            val formattedStr = formatter.format(str.toLong())
+            amountView.setText(formattedStr)
+            amountView.setSelection(amountView.text.length)
+        }
     }
 
     fun setTypeFromDialog(type: TransactionType){
@@ -80,7 +93,7 @@ class InputTransactionActivity : FragmentActivity(),
         val amount = amountView.text.toString()
         val typeStr = typeView.text.toString()
         if(validateInput(desc, amount, typeStr)){
-            val trx = Transaction(null, date, desc, amount, trxType.id!!)
+            val trx = Transaction(null, date, desc, amount.replace(",", ""), trxType.id!!)
             val id = SqLiteHandler(this).insertTransaction(trx)
             if(id != null){
                 updateBalance(trx, trxType)
